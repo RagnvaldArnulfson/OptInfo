@@ -68,17 +68,26 @@ let mult_int a b =
 	done;
 	!resu;;*)(*methode DM3*)
 
+let mult_poly a b =
+	let n = vect_length a and m = vect_length b in
+		let result = ref (make_vect (n+m) 0) in
+		for i = 0 to n-1 do
+			for j = 0 to m-1 do
+				!result.(i+j) <- !result.(i+j) + a.(i) * b.(j)
+			done;
+		done;
+	!result;;
+
 let mult_int a b =
 	let n = vect_length a and m = vect_length b in
 	let result = ref (make_vect (n+m) 0) in
 	for i = 0 to n-1 do
 		for j = 0 to m-1 do
-			let s = !result.(i+j) + a.(i) + b.(j) in
-			(!result.(i+j) <- s mod 10; !result.(i+j+1) <- s/10 )
+			let s = !result.(i+j) + a.(i) * b.(j) in
+			(!result.(i+j) <- s mod 10; !result.(i+j+1) <- !result.(i+j+1) + (s / 10))
 		done;
 	done;
 	!result;;
-
 
 let vect_of_string a =
 	let n = (string_length a) - 1 and v = ref [||] in
