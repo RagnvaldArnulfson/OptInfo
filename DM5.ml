@@ -1,34 +1,33 @@
 let eratosthene n =
-	let a = make_vect (n+1) true and
-		prem = ref [] and i = ref 1
-		and compteur = ref 0 in
-	while !i < n do
-		begin
-		incr i;
-		if a.(!i) then
+	let a = make_vect (n + 1) true and prem = ref [] and compteur = ref 0 in
+		for i = 2 to n do
 			begin
-			incr compteur;
-			prem := !prem @ [!i];
-			let j = ref 2 in
-			while !i * !j <= n do
-				(a.(!i * !j) <- false; incr j)
-				done;
-			end;			
-		end
-	done;		
+				if a.(i) then
+					begin
+						incr compteur;
+						prem := !prem @ [i];
+						let j = ref 2 in
+							while i * !j <= n do
+								(a.(i * !j) <- false; incr j)
+							done;
+					end
+			end
+		done;
 	!compteur, !prem;;
 
 eratosthene 25;;
 
-
 let horner a x =
-   let n = (vect_length a - 1) and result = ref 0 in
-      for i = 0 to n do
-         result := !result * x + a.(n - i);
-      done;
-      !result;;
+	let n = (vect_length a - 1) and result = ref 0 in
+		for i = 0 to n do
+			result := !result * x + a.(n - i);
+		done;
+	!result;;
 
 horner [|1;1;2|] 2;;
+
+let add_int a b =
+	let p = vect_length a and q = vect_length b in
 
 let vect_of_string a =
 	let n = (string_length a) - 1 and v = ref [||] in
@@ -68,7 +67,7 @@ let caissier a s =
 caissier [|750;45;15;5|] 1578;;
 
 
-#open "float";;
+(*#open "float";;*)
 
 let heron a eps =
 	let result = ref a in
