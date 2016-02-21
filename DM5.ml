@@ -15,16 +15,12 @@ let eratosthene n =
 		done;
 	!compteur, !prem;;
 
-eratosthene 25;;
-
 let horner a x =
 	let n = (vect_length a - 1) and result = ref 0 in
 		for i = 0 to n do
 			result := !result * x + a.(n - i);
 		done;
 	!result;;
-
-horner [|1;1;2|] 2;;
 
 let add_int a b =
 	let ap = ref (copy_vect a) 	 and bq = ref (copy_vect b) 	and
@@ -41,14 +37,10 @@ let add_int a b =
 	done;
 	if !r = 1 then concat_vect !resu [|1|] else !resu;;
 
-add_int [|7;5;4;8;2|] [|1;2;3;4;5;6;7|];;
-
 let decalage i b =
 	let resu = ref (copy_vect b) in
 	for k = 1 to i do resu := concat_vect [|0|] !resu done;
 	!resu;;
-
-decalage 5 [|1;5;7|];;
 
 let produit_court_long c b =
 	let resu = ref [||] and r = ref 0 and p = (vect_length b) - 1 in
@@ -57,14 +49,13 @@ let produit_court_long c b =
 		else
 			begin
 				for i = 0 to p do
-					let s = b.(i) * c + !r in (resu := concat_vect !resu [|s mod 10|]; r := s / 10)
+					let s = b.(i) * c + !r in
+						(resu := concat_vect !resu [|s mod 10|]; r := s / 10)
 				done;
 				if !r > 0 then resu := concat_vect !resu [|!r|];
 				!resu;
 			end
 	;;
-
-produit_court_long 2 [|4;7;5;4|];;
 
 let mult_int a b =
 	let ap = ref (copy_vect a) 	 and bq = ref (copy_vect b) 	and
@@ -77,16 +68,12 @@ let mult_int a b =
 	done;
 	!resu;;
 
-mult_int [|7;7;7;7;4;1|] [|2;7;3;8;5|];;
-
 let vect_of_string a =
 	let n = (string_length a) - 1 and v = ref [||] in
 	for i = 0 to n do
-		v := concat_vect !v [|a.[n-i]|];
+		v := concat_vect !v [|(int_of_char a.[n-i]) - 48|];
 	done;
 	!v;;
-
-vect_of_string "654654";;
 
 let string_of_vect a =
 	let n = (vect_length a) - 1 and s = ref "" in
@@ -95,7 +82,11 @@ let string_of_vect a =
 	done;
 	!s;;
 
-string_of_vect [|1;1;2|];;	
+let add_string a b =
+	string_of_vect (add_int (vect_of_string a) (vect_of_string b));;
+
+let mult_string a b =
+	string_of_vect (mult_int (vect_of_string a) (vect_of_string b));;
 
 let caissier a s =
 	let reste = ref s and n = vect_length a and output = ref [||] and i = ref 0 in
@@ -112,8 +103,6 @@ let caissier a s =
 	end
 	done;
 	!output, !reste;;
-	
-caissier [|750;45;15;5|] 1578;;
 
 #open "float";;
 
@@ -124,8 +113,6 @@ let heron a eps =
 	done;
 	!result;;
 	
-heron 25. 0.01;;
-
 let spy =
 	let a = ref 1. and b = ref 1. in
 	while (!a + !b) - !a - !b = 0. do
