@@ -37,7 +37,7 @@ let add_int a b =
 	done;
 	if !r = 1 then concat_vect !resu [|1|] else !resu;;
 
-let decalage i b =
+(*let decalage i b =
 	let resu = ref (copy_vect b) in
 	for k = 1 to i do resu := concat_vect [|0|] !resu done;
 	!resu;;
@@ -66,7 +66,7 @@ let mult_int a b =
 	for i = 0 to n do
 		let s = produit_court_long !ap.(i) (decalage i !bq) in resu := add_int !resu s
 	done;
-	!resu;;
+	!resu;;*)(*methode DM3*)
 
 let vect_of_string a =
 	let n = (string_length a) - 1 and v = ref [||] in
@@ -88,14 +88,14 @@ let add_string a b =
 let mult_string a b =
 	string_of_vect (mult_int (vect_of_string a) (vect_of_string b));;
 
-let caissier a s =
-	let reste = ref s and n = vect_length a and output = ref [||] and i = ref 0 in
+let caissier c s =
+	let reste = ref s and n = vect_length c and output = ref [||] in
 	for i=0 to n-1 do
 		begin
 		let compteur = ref 0 in
-		while !reste >= a.(i) do
+		while !reste >= c.(i) do
 			begin
-			reste := !reste - a.(i);
+			reste := !reste - c.(i);
 			incr compteur;
 			end
 		done;
