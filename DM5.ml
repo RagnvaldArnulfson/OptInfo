@@ -1,39 +1,39 @@
 let eratosthene n =
 	let a = make_vect (n + 1) true and prem = ref [] and compteur = ref 0 in
-		for i = 2 to n do
+	for i = 2 to n do
+		begin
+		if a.(i) then
 			begin
-				if a.(i) then
-					begin
-						incr compteur;
-						prem := !prem @ [i];
-						let j = ref 2 in
-							while i * !j <= n do
-								(a.(i * !j) <- false; incr j)
-							done;
-					end
+			incr compteur;
+			prem := !prem @ [i];
+			let j = ref 2 in
+			while i * !j <= n do
+				(a.(i * !j) <- false; incr j)
+			done;
 			end
-		done;
+		end
+	done;
 	!compteur, !prem;;
 
 let horner a x =
 	let n = (vect_length a - 1) and result = ref 0 in
-		for i = 0 to n do
-			result := !result * x + a.(n - i);
-		done;
+	for i = 0 to n do
+		result := !result * x + a.(n - i);
+	done;
 	!result;;
 
 let add_int a b =
-	let ap = ref (copy_vect a) 	 and bq = ref (copy_vect b) 	and
-			p  = (vect_length a) - 1 and q  = (vect_length b) - 1 in
-	let n  = max p q	 and	 resu = ref [||] 	and 	r = ref 0 in
+	let ap = ref (copy_vect a)   and bq = ref (copy_vect b)   and
+	    p  = (vect_length a) - 1 and q  = (vect_length b) - 1 in
+	let n = max p q   and   resu = ref [||]   and   r = ref 0 in
 	for i = p + 1 to n do ap := concat_vect !ap [|0|] done;
 	for i = q + 1 to n do bq := concat_vect !bq [|0|] done;
 	for i = 0     to n do
-		begin
-			let s = !ap.(i) + !bq.(i) + !r in
-				if s < 10 then (resu := concat_vect !resu [|s|];    r := 0)
-				else 					 (resu := concat_vect !resu [|s-10|]; r := 1)
-		end
+	begin
+		let s = !ap.(i) + !bq.(i) + !r in
+		if s < 10 then (resu := concat_vect !resu [|s|];    r := 0)
+		else 	       (resu := concat_vect !resu [|s-10|]; r := 1)
+	end
 	done;
 	if !r = 1 then concat_vect !resu [|1|] else !resu;;
 
@@ -44,23 +44,23 @@ let decalage i b =
 
 let produit_court_long c b =
 	let resu = ref [||] and r = ref 0 and p = (vect_length b) - 1 in
-	if 			c = 0 then [||]
+	if 	c = 0 then [||]
 	else if c = 1 then b
-		else
-			begin
-				for i = 0 to p do
-					let s = b.(i) * c + !r in
-						(resu := concat_vect !resu [|s mod 10|]; r := s / 10)
-				done;
-				if !r > 0 then resu := concat_vect !resu [|!r|];
-				!resu;
-			end
+	else
+		begin
+		for i = 0 to p do
+			let s = b.(i) * c + !r in
+				(resu := concat_vect !resu [|s mod 10|]; r := s / 10)
+		done;
+		if !r > 0 then resu := concat_vect !resu [|!r|];
+		!resu;
+		end
 	;;
 
 let mult_int a b =
-	let ap = ref (copy_vect a) 	 and bq = ref (copy_vect b) 	and
-			p  = (vect_length a) - 1 and q  = (vect_length b) - 1 in
-	let n  = max p q	 and	 resu = ref [||] in
+	let ap = ref (copy_vect a)   and bq = ref (copy_vect b)   and
+	    p  = (vect_length a) - 1 and q  = (vect_length b) - 1 in
+	let n  = max p q	     and resu = ref [||] 	  in
 	for i = p + 1 to n do ap := concat_vect !ap [|0|] done;
 	for i = q + 1 to n do bq := concat_vect !bq [|0|] done;
 	for i = 0 to n do
@@ -91,16 +91,16 @@ let mult_string a b =
 let caissier a s =
 	let reste = ref s and n = vect_length a and output = ref [||] and i = ref 0 in
 	for i=0 to n-1 do
-	begin
+		begin
 		let compteur = ref 0 in
 		while !reste >= a.(i) do
-		begin
+			begin
 			reste := !reste - a.(i);
 			incr compteur;
-		end
+			end
 		done;
 		output := concat_vect !output [|!compteur|];
-	end
+		end
 	done;
 	!output, !reste;;
 
