@@ -27,7 +27,21 @@ let horner a x =
 horner [|1;1;2|] 2;;
 
 let add_int a b =
-	let p = vect_length a and q = vect_length b in
+	let ap = ref (copy_vect a)   and bq = ref (copy_vect b)   and
+	    p  = (vect_length a) - 1 and q  = (vect_length b) - 1 in
+	let n  = max p q and resu = ref [||] 	and 	r = ref 0 in
+	for i = p + 1 to n do ap := concat_vect !ap [|0|] done;
+	for i = q + 1 to n do bq := concat_vect !bq [|0|] done;
+	for i = 0     to n do
+		begin
+			let s = !ap.(i) + !bq.(i) + !r in
+				if s < 10 then (resu := concat_vect !resu [|s|];    r := 0)
+				else (resu := concat_vect !resu [|s-10|]; r := 1)
+		end
+	done;
+	if !r = 1 then concat_vect !resu [|1|] else !resu;;
+
+add_int [|7;5;4;8;2|] [|1;2;3;4;5;6;7|];;
 
 let vect_of_string a =
 	let n = (string_length a) - 1 and v = ref [||] in
@@ -47,7 +61,6 @@ let string_of_vect a =
 
 string_of_vect [|1;1;2|];;	
 
-
 let caissier a s =
 	let reste = ref s and n = vect_length a and output = ref [||] and i = ref 0 in
 	for i=0 to n-1 do
@@ -65,7 +78,6 @@ let caissier a s =
 	!output, !reste;;
 	
 caissier [|750;45;15;5|] 1578;;
-
 
 (*#open "float";;*)
 
