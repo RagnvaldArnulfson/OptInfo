@@ -20,17 +20,26 @@ ppdiv 77;;
 
 #open "hashtbl";;
 
-let rec fibonacci n =
-	let h = new 51 in
+let fibonacci n =
+	let h = new (n+1) in
 	add h 0 0;
 	add h 1 1;
 	let rec fibo n =
-  		begin
-  		try
-  			find h n
+		try
+			find h n
     		with
-			| Not_found -> let r = fibo (n - 1) + fibo (n - 2) in add h n r; r;
-		end	
+			| Not_found -> let r = fibo (n-1) + fibo (n-2) in add h n r; r;
 	in fibo n;;
+	
+let fibonacci_v22 n =
+	let h = make_vect (n+1) (-1) in
+	h.(0) <- 0;
+	h.(1) <- 1;
+	let rec fibo_v22 n =
+  		if h.(n) < 0 then (let r = fibo_v22 (n-1) + fibo_v22 (n-2) in h.(n) <- r; r;)
+  		else h.(n);
+	in fibo_v22 n;;
 
-fibonacci 54;;
+
+fibonacci 147;;
+fibonacci_v22 147;;
