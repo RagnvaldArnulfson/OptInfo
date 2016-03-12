@@ -25,12 +25,12 @@ let rec fibonacci n =
 	add h 0 0;
 	add h 1 1;
 	let rec fibo n =
-  	begin
-  	try
-      find h n
-    with
-			|Not_found -> let r = fibo (n - 1) + fibo (n - 2) in add h n r; r;
-		end
+  		begin
+  		try
+  			find h n
+    		with
+			| Not_found -> let r = fibo (n - 1) + fibo (n - 2) in add h n r; r;
+		end	
 	in fibo n;;
 
 fibonacci 54;;
