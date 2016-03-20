@@ -42,13 +42,7 @@ let suites_coupl_v1 n =
 			| 0 -> 1
 			| n -> 4*u(n-1) + 4*v(n-1)
 	in u(n), v(n);;
-	
-let suites_coupl_v3 n =	
-	let rec uv = fun
-		| 0 0 -> (1, 1)
-		| n m -> let (a, b) = uv (n-1) (m-1) in (4*a + b, 4*a + 4*b)
-	in uv n n;;
-	
+		
 let suites_coupl_v2 n =	
 	let u = ref 1 and v = ref 1 in
 	for k=1 to n do
@@ -56,11 +50,9 @@ let suites_coupl_v2 n =
 	done;
 	!u, !v;;
 
-let suites_coupl_v3 n =	
-	let rec uv = fun
-		| 0 0 -> (1, 1)
-		| n m -> let (a, b) = uv (n-1) (m-1) in (4*a + b, 4*a + 4*b)
-	in uv n n;;
+let rec suites_coupl_v3 = fun
+		| 0 -> (1, 1)
+		| n -> let (a, b) = uv(n-1) in (4*a + b, 4*a + 4*b);;
 	
 suites_coupl_v1 2;;
 suites_coupl_v2 2;;
@@ -70,9 +62,13 @@ let hanoi n =
 	let compt = ref 1 in
 	let rec han a b c i =
 		match i with
-			| 1 -> print_string(string_of_int(!compt) ^ ":" ^ a ^ "->" ^ c ^ "\n"); incr compt;
+			| 1 -> print_string(string_of_int(!compt) ^ ":"
+														 ^ a ^ "->" ^ c ^ "\n");
+						 incr compt;
 			| k -> han a c b (i-1);
-						 print_string(string_of_int(!compt) ^ ":" ^ a ^ "->" ^ c ^ "\n"); incr compt;
+						 print_string(string_of_int(!compt) ^ ":"
+						 								 ^ a ^ "->" ^ c ^ "\n");
+						 incr compt;
 						 han b a c (i-1)
 	in han "A" "B" "C" n;;
 
@@ -83,27 +79,36 @@ let hanoi_var n =
 	let rec han a b c i =
 		match i with
 			| 1 -> begin match a, c with
-						| "A", "C" -> print_string(string_of_int(!compt) ^ ":A->B\n" ^ string_of_int(!compt + 1) ^ ":B->C\n"); compt := !compt +2;
-						| "C", "A" -> print_string(string_of_int(!compt) ^ ":C->B\n" ^ string_of_int(!compt + 1) ^ ":B->A\n"); compt := !compt +2;
-						| a, c -> print_string(string_of_int(!compt) ^ ":" ^ a ^ "->" ^ c ^ "\n"); incr compt;
+						| "A", "C" -> print_string(string_of_int(!compt) ^ ":A->B\n"
+																		^ string_of_int(!compt + 1) ^ ":B->C\n");
+													compt := !compt +2;
+						| "C", "A" -> print_string(string_of_int(!compt) ^ ":C->B\n"
+																		^ string_of_int(!compt + 1) ^ ":B->A\n");
+													compt := !compt +2;
+						| a, c -> print_string(string_of_int(!compt) ^ ":"
+																		^ a ^ "->" ^ c ^ "\n");
+											incr compt;
 						end;
-			| k -> if int_of_char(a.[0]) = succ (int_of_char(c.[0])) or succ (int_of_char(a.[0])) = int_of_char(c.[0]) then
+			| k -> if abs(int_of_char(a.[0]) - int_of_char(c.[0])) = 1 then
 								begin
 								han a c b (i-1);
-						 		print_string(string_of_int(!compt) ^ ":" ^ a ^ "->" ^ c ^ "\n"); incr compt;
+						 		print_string(string_of_int(!compt) ^ ":" ^ a ^ "->" ^ c ^ "\n");
+						 		incr compt;
 						 		han b a c (i-1);
 						 		end
 						 else
 						 		begin
 						 		han a b c (i-1);
-						 		print_string(string_of_int(!compt) ^ ":" ^ a ^ "->" ^ b ^ "\n");incr compt;
+						 		print_string(string_of_int(!compt) ^ ":" ^ a ^ "->" ^ b ^ "\n");
+						 		incr compt;
 						 		han c b a (i-1);
-						 		print_string(string_of_int(!compt) ^ ":" ^ b ^ "->" ^ c ^ "\n");incr compt;
+						 		print_string(string_of_int(!compt) ^ ":" ^ b ^ "->" ^ c ^ "\n");
+						 		incr compt;
 						 		han a b c (i-1);
 						 		end
 	in han "A" "B" "C" n;;
 	
-hanoi_var 5;;
+hanoi_var 3;;
 
 let hanoi_graph n =
 	let init vis =
@@ -114,7 +119,8 @@ let hanoi_graph n =
 				for i = 0 to l-2 do
 					vis.(i).(j) <- (make_string (l) ` ` ^ "|" ^ make_string (l+1) ` `);
 					if (j = 0 &  i < l-1) then
-						vis.(i).(j) <- ((make_string (l-i-1) ` `) ^ (make_string (i+1) `<`) ^ "|" ^ (make_string (i+1) `>`) ^ (make_string (l-i) ` `));					
+						vis.(i).(j) <- ((make_string (l-i-1) ` `) ^ (make_string (i+1) `<`) ^
+														"|" ^ (make_string (i+1) `>`) ^ (make_string (l-i) ` `));					
 				done;
 				end
 			done;
@@ -129,23 +135,25 @@ let hanoi_graph n =
 			done;
 	in
 	let visuel = init(make_matrix (n+1) 3 (make_string (2*n+3) ` `)) in
-	print(visuel);
+	print(visuel);print_string("\n\n");
 	let rec han a b c i arr =
 		match i with
 			| 1 -> let temp = visuel.(n-arr.(a)).(a) in
-					(visuel.(n-arr.(a)).(a) <- visuel.(n-arr.(c)-1).(c); arr.(a) <- arr.(a)-1;
+					(visuel.(n-arr.(a)).(a) <- visuel.(n-arr.(c)-1).(c);
+					arr.(a) <- arr.(a)-1;
 					visuel.(n-arr.(c)-1).(c) <- temp; arr.(c) <- arr.(c)+1;
 					print(visuel);print_string("\n\n");)
 
 			| k -> han a c b (i-1) arr;
 					let temp = visuel.(n-arr.(a)).(a) in
-					(visuel.(n-arr.(a)).(a) <- visuel.(n-arr.(c)-1).(c); arr.(a) <- arr.(a)-1;
+					(visuel.(n-arr.(a)).(a) <- visuel.(n-arr.(c)-1).(c);
+					arr.(a) <- arr.(a)-1;
 					visuel.(n-arr.(c)-1).(c) <- temp; arr.(c) <- arr.(c)+1;
 					print(visuel);print_string("\n\n");
 					han b a c (i-1) arr;)
 	in han 0 1 2 n [|n;0;0|];;
 	
-hanoi_graph 5;;	
+hanoi_graph 7;;	
 
 let rec f = fun
 	| x when x > 1 -> f((1+x)/2)+1
@@ -155,7 +163,7 @@ f 17;;
 
 let rec g i j = match i, j with
 	| n, 0 -> n
-	| n, m -> g (n*n) (m/2);;
+	| n, m -> g (n*n) (m / 2);;
 	
 g 2 0;;  g 2 1;; g 2 2;; g 2 3;; g 2 4;; g 2 5;; g 2 6;; g 2 7;; g 2 8;;
 (*#g 2 0;;
@@ -204,11 +212,27 @@ let palindrome_v1 s =
 	done;
 	!palind;;
 		
-palindrome_v1 "loeol";;
+palindrome_v1 "lollol";;
 
 let rec palindrome_v2 s =
-	let n = string_length s in
-	if n < 2 then true
-	else s.[0] = s.[n-1] & palindrome_v2 (sub_string s 1 (n-2));;
+	match string_length s with
+		| n when n < 2 -> true
+		| n -> (s.[0] = s.[n-1]) & palindrome_v2 (sub_string s 1 (n-2));;
 	
-palindrome_v2 "lsoezeol";;
+palindrome_v2 "icci";;
+
+let palindrome_v3 s =
+	let rec palin i j =
+		match (j-i) with
+			| n when n < 1 -> true
+			| n -> (s.[i] = s.[j]) && palin (i+1) (j-1)
+	in palin 0 ((string_length s)-1);;
+
+palindrome_v3 "heycdyeh";;
+
+let rec indecidable = fun
+  | 0 -> 1
+  | n when n > 5 -> indecidable (n + 1)
+  | n -> indecidable (n - 1);;
+	
+indecidable 2;;
