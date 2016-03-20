@@ -102,16 +102,18 @@ let hanoi_var n =
 						 		han a b c (i-1);
 						 		end
 	in han "A" "B" "C" n;;
+	
+hanoi_var 5;;
 
 let hanoi_graph n =
 	let init vis =
 		let l = vect_length vis in
-			for j=0 to 2 do
+			for j = 0 to 2 do
 				begin
 				vis.(l-1).(j) <- (make_string (l) `_` ^ "|" ^ make_string (l) `_` ^ " ");
-				for i=0 to l-2 do
+				for i = 0 to l-2 do
 					vis.(i).(j) <- (make_string (l) ` ` ^ "|" ^ make_string (l+1) ` `);
-					if (j = 0 &  i<l-1) then
+					if (j = 0 &  i < l-1) then
 						vis.(i).(j) <- ((make_string (l-i-1) ` `) ^ (make_string (i+1) `<`) ^ "|" ^ (make_string (i+1) `>`) ^ (make_string (l-i) ` `));					
 				done;
 				end
@@ -119,8 +121,8 @@ let hanoi_graph n =
 			vis;
 	and print vis =
 		let l = vect_length vis in
-			for i=0 to l-1 do
-				for j=0 to 2 do
+			for i = 0 to l-1 do
+				for j = 0 to 2 do
 					print_string(vis.(i).(j))
 				done;
 				print_string("\n")
@@ -144,11 +146,69 @@ let hanoi_graph n =
 	in han 0 1 2 n [|n;0;0|];;
 	
 hanoi_graph 5;;	
-	
-hanoi_var 5;;
 
 let rec f = fun
 	| x when x > 1 -> f((1+x)/2)+1
 	| x -> 0;;
 	
 f 17;;
+
+let rec g i j = match i, j with
+	| n, 0 -> n
+	| n, m -> g (n*n) (m/2);;
+	
+g 2 0;;  g 2 1;; g 2 2;; g 2 3;; g 2 4;; g 2 5;; g 2 6;; g 2 7;; g 2 8;;
+(*#g 2 0;;
+- : int = 2
+#g 2 1;;
+- : int = 4
+#g 2 2;;
+- : int = 16
+#g 2 3;;
+- : int = 16
+#g 2 4;;
+- : int = 256
+#g 2 5;;
+- : int = 256
+#g 2 6;;
+- : int = 256
+#g 2 7;;
+- : int = 256
+#g 2 8;;
+- : int = 65536*)
+
+let binome_v1 n p =
+	let compteur = ref 0 in 
+	let rec bin = fun
+		| n 0 -> 1
+		| n p when n < p -> 0
+		| n p -> compteur := !compteur+2; bin (n - 1) p + bin (n - 1) (p - 1); 
+	in !compteur, bin n p;;
+	
+binome_v1 1 1;;
+
+let rec binome_v2 = fun
+	| n 0 -> 1, 1
+	| 0 p -> 1, 0
+	| n p -> let (compteur_a, bino_a) = binome_v2 (n - 1) p and
+										 (compteur_b, bino_b) = binome_v2 (n - 1) (p - 1) in
+										 (compteur_a + compteur_b, bino_a + bino_b);;
+	
+binome_v2 1 1;; (*2,1*)
+
+let palindrome_v1 s =
+	let n = string_length s and i = ref 0 and palind = ref true in
+	while !i <= n/2 & !palind do
+		palind := (s.[!i] = s.[n - 1 - !i]);
+		incr i;
+	done;
+	!palind;;
+		
+palindrome_v1 "loeol";;
+
+let rec palindrome_v2 s =
+	let n = string_length s in
+	if n < 2 then true
+	else s.[0] = s.[n-1] & palindrome_v2 (sub_string s 1 (n-2));;
+	
+palindrome_v2 "lsoezeol";;
