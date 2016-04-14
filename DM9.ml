@@ -148,16 +148,8 @@ let evaluation plaquettes =
 
 let etape = function
 	| [] -> []
-	| (a,b)::q -> (elem_comp_liste a (map (function x, y -> x) q))@q;;
-
-let etape = function
-	| [] -> []
 	| a::q -> elem_comp_liste a q@q;;
 
-let rec find_n n = function
-	| [] -> ""
-	| (a,b)::q when a = n -> b
-	| (a,b)::q -> find_n n q;;
 
 (*let evaluation plaquettes =
 	let rec eval = function
@@ -172,4 +164,31 @@ let lecompteestbon n p =
 				if ans = "" then (comptebon n plaq) else ans
 	in comptebon n (map (function x -> x, string_of_int(x)) p);;
 
-lecompteestbon 952 [25;50;75;100;3;6];;
+lecompteestbon 157 [25;50;75;100;3;6];;
+
+let rec elem_comp_liste_b t hist = function
+	| [] -> []
+	| h::q when h <> t -> (map (function x -> hist@(x::q)) (operation t h))@(elem_comp_liste_b t (h::hist) q)
+	| h::q -> elem_comp_liste_b t hist q;;
+
+let rec etape hist = function
+	| [] -> []
+	| h::q -> (elem_comp_liste_b h hist q)@(etape (h::hist) q);;
+	
+let rec find_n n = function
+	| [] -> ""
+	| (a,b)::q when a = n -> b
+	| h::q -> find_n n q;;
+
+let rec compte_bon n = function
+	| [] -> []
+	| ([]::q) -> compte_bon n q
+	| (h::q) -> let res = find_n n h in
+							if res = "" then compte_bon n ((etape [] h)@q)
+							else [n,res];;
+	
+elem_comp_liste_b (5,"5") [] [5,"5";4,"4";9,"9"];;
+
+etape [] [5,"5";4,"4";9,"9"];;
+
+compte_bon 67 [[5,"5";4,"4";9,"9";7,"7"]];;
