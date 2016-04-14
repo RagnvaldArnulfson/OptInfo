@@ -43,22 +43,24 @@ let decomposition n =
 		| 1 -> d
 		| n -> let div = (ppdiv n 2) in decomp (div::d) (n/div)
 	and regroupe rgrp compt = function
-	| [] -> rgrp
-	| h::d::q when h = d -> regroupe rgrp (compt+1) (d::q)
-	| h::q -> regroupe ((h,compt)::rgrp) 1 q	
+		| [] -> rgrp
+		| h::d::q when h = d -> regroupe rgrp (compt+1) (d::q)
+		| h::q -> regroupe ((h,compt)::rgrp) 1 q	
 	and imprime resu = function
-	| [] -> resu
-	| (a,n)::q when q <> [] & n <> 1 -> imprime (resu ^ string_of_int(a) ^ "^" ^ string_of_int(n) ^ " * ") q
-	|	(a,n)::q when q <> [] -> imprime (resu ^ string_of_int(a) ^ " * ") q
-	| (a,n)::q when n <> 1 -> imprime (resu ^ string_of_int(a) ^ "^" ^ string_of_int(n)) q
-	| (a,n)::q -> imprime (resu ^ string_of_int(a)) q
+		| [] -> resu
+		| (a,n)::q when q <> [] & n <> 1 -> imprime (resu ^ string_of_int(a) ^ "^" ^ string_of_int(n) ^ " * ") q
+		|	(a,n)::q when q <> [] -> imprime (resu ^ string_of_int(a) ^ " * ") q
+		| (a,n)::q when n <> 1 -> imprime (resu ^ string_of_int(a) ^ "^" ^ string_of_int(n)) q
+		| (a,n)::q -> imprime (resu ^ string_of_int(a)) q
 	
 	in imprime "" (regroupe [] 1 (decomp [] n));;
 
 decomposition 24;;
 
+#open "random";;
+
 let lecompteestbon n l =
-	let op c d =
+	let operation c d =
 		let (a,a')=c and (b,b')=d in
 		match (a,b) with
 		| a,b when b > a && b mod a = 0 ->
@@ -69,25 +71,44 @@ let lecompteestbon n l =
 		| a,b  when a <> b -> (a-b,"("^a'^"-"^b'^")")::[a+b,"("^a'^"+"^b'^")";a*b,"("^a'^"*"^b'^")"]
 		| a,b -> (a/b,"("^a'^"/"^b'^")")::[a+b,"("^a'^"+"^b'^")";a*b,"("^a'^"*"^b'^")"]
 	in
-	let rec elem_liste_b t hist = function
+	let rec elem_liste t hist = function
 		| [] -> []
-		| h::q when h <> t -> (map (function x -> hist@(x::q)) (operation t h))@(elem_comp_liste_b t (h::hist) q)
-		| h::q -> elem_comp_liste_b t hist q
+		| h::q when h <> t -> (map (function x -> hist@(x::q)) (operation t h))@(elem_liste t (h::hist) q)
+		| h::q -> elem_liste t hist q
 	and etape hist = function
 		| [] -> []
-		| h::q -> (elem_comp_liste_b h hist q)@(etape (h::hist) q)
+		| h::q -> (elem_liste h hist q)@(etape (h::hist) q)
 	and find_n n = function
 		| [] -> ""
 		| (a,b)::q when a = n -> b
 		| h::q -> find_n n q
 	and compte_bon n = function
-		| [] -> []
+		| [] -> [-1,"Pas de Solution"]
 		| []::q -> compte_bon n q
-		| h::q -> let res = find_n n h in
-								if res = "" then compte_bon n ((etape [] h)@q)
-								else [n,res]
+		| h::q -> let res = find_n n h in if res = "" then compte_bon n ((etape [] h)@q) else [n,res]
 								
 	in snd(hd(compte_bon n [map (function x -> x, string_of_int x) l]));;
 
+lecompteestbon 155 [2;5;1;10;100;7];;
 
-lecompteestbon 782 [2;5;1;10;100;7];;	
+let auto_lecomptestbon =
+	let genererprobleme =
+		let n = 100 + random__int 899 in
+		let r = (function big -> (1-big)*(1 + random__int 10)+big*25*(1+random__int 4))
+		in (n,[r(random__int 2);r(random__int 2);r(random__int 2);r(random__int 2);r(random__int 2);r(random__int 2)])
+	in let (a,b) = genererprobleme in a, b, lecompteestbon a b;;
+	
+let eratosthene n = 
+	let rec generer = function
+  	| 2 -> [2]
+  	| n -> n::generer (n-1)
+  and barrer i = function
+  	| [] -> []
+  	| h::q when h mod i = 0 && h <> i -> barrer i q
+  	| h::q -> h::barrer i q
+	and erat l = function
+  	| 2 -> barrer 2 l
+  	| n -> erat (barrer n l) (n-1)
+ 	in erat (generer n) n ;;
+
+eratosthene 50;;
