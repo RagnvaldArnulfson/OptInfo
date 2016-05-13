@@ -9,7 +9,8 @@ let lecompteestbon n l =
 			(a-b,"("^a'^"-"^b'^")")::(a/b,"("^a'^"/"^b'^")")::[a+b,"("^a'^"+"^b'^")";a*b,"("^a'^"*"^b'^")"]
 		| a,b  when a <> b -> (a-b,"("^a'^"-"^b'^")")::[a+b,"("^a'^"+"^b'^")";a*b,"("^a'^"*"^b'^")"]
 		| a,b -> (a/b,"("^a'^"/"^b'^")")::[a+b,"("^a'^"+"^b'^")";a*b,"("^a'^"*"^b'^")"]
-	and elem_liste hist f_partial_step =
+	in
+	let elem_liste hist f_partial_step =
 		let t::partial_step = f_partial_step in
 		let rec e_liste hist = function
 			| [] -> []
