@@ -71,3 +71,30 @@ let rec fusion_sans_rep = fun
 	| l (h::q) -> h::fusion_sans_rep l q;;
 	
 fusion_sans_rep [1;2;3;5;9;12;13;15] [1;5;6;7;8;10;11;13;16];;
+
+let rec cherche_seq = function
+	| [] -> [],[]
+	| h::h'::q when h <= h' -> let (s,r) = cherche_seq (h'::q) in (h::s, r) 
+	| h::q -> [h],q;;
+
+cherche_seq [5;7;8;9;12];;
+cherche_seq [1;2;3;2;1];;
+
+let rec fusion = fun
+	| [] l -> l
+	| l [] -> l
+	| (h::q) (h'::q' as l) when h <= h' -> h::fusion q l
+	| l (h::q) -> h::fusion l q;;
+
+let rec tri_ajout = function
+	| [] -> []
+	| l -> let (s,r) = cherche_seq l in fusion s (tri_ajout r);;
+
+tri_ajout [7;5;9;6;4;1;2;8;3];;
+
+let rec fusion_seq = function
+	| [] -> []
+	| l -> let (s,r) = cherche_seq l in let (s',r') = cherche_seq r in
+				 fusion (fusion s s') (fusion_seq r');;
+	
+fusion_seq [7;5;9;6;4;1;2;8;3];;
