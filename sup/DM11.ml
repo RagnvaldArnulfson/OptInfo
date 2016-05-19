@@ -18,7 +18,7 @@ let paire_dicho a s =
 	try
 		for i=0 to n-1 do
 			let b = a.(i) in let j = recherche_bin a (s-b) in
-			if j <> (-1) then
+			if j <> (-1) && i <> j  then
 				raise (Pair_Found (b,a.(j)))
 		done;
 		(-1,-1)
@@ -29,7 +29,7 @@ let paire_dicho_2 a s =
 	while j := recherche_bin a (s-a.(!i)); !j = (-1) && !i < n-1 do	
 		incr i;
 	done;
-	if !i < n-1 then (a.(!i),a.(!j)) else (-1,-1);;
+	if !i < n-1 && !i <> !j then (a.(!i),a.(!j)) else (-1,-1);;
 
 let paire_dicho_lin a s =
 	let n = vect_length a in
@@ -40,10 +40,13 @@ let paire_dicho_lin a s =
 	done;
 	if !sum = s then (a.(!i),a.(!j)) else (-1,-1);;
 
+paire_dicho [|1;5;7;9;15;19;25|] 2;;
 paire_dicho [|1;5;7;9;15;19;25|] 22;;
 paire_dicho [|1;5;7;9;15;19;25|] 21;;
+paire_dicho_2 [|1;5;7;9;15;19;25|] 2;;
 paire_dicho_2 [|1;5;7;9;15;19;25|] 22;;
 paire_dicho_2 [|1;5;7;9;15;19;25|] 21;;
+paire_dicho_lin [|1;5;7;9;15;19;25|] 2;;
 paire_dicho_lin [|1;5;7;9;15;19;25|] 22;;
 paire_dicho_lin [|1;5;7;9;15;19;25|] 21;;
 
