@@ -47,3 +47,11 @@ paire_dicho_2 [|1;5;7;9;15;19;25|] 21;;
 paire_dicho_lin [|1;5;7;9;15;19;25|] 22;;
 paire_dicho_lin [|1;5;7;9;15;19;25|] 21;;
 
+let rec fusion_sans_rep = fun
+	| [] l -> l
+	| l [] -> l
+	| (h::q) (h'::q') when h = h' -> h::fusion_sans_rep q q'
+	| (h::q) (h'::q' as l) when h <= h' -> h::fusion_sans_rep q l
+	| l (h::q) -> h::fusion_sans_rep l q;;
+	
+fusion_sans_rep [1;2;3;5;9;12;13;15] [1;5;6;7;8;10;11;13;16];;
