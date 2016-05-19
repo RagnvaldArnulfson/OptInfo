@@ -21,7 +21,7 @@ let horner a x =
 		result := !result * x + a.(n - i);
 	done;
 	!result;;
-
+	
 let add_int a b =
 	let ap = ref (copy_vect a)   and bq = ref (copy_vect b)   and
 	    p  = (vect_length a) - 1 and q  = (vect_length b) - 1 in
