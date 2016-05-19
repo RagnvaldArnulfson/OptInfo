@@ -96,5 +96,34 @@ let rec fusion_seq = function
 	| [] -> []
 	| l -> let (s,r) = cherche_seq l in let (s',r') = cherche_seq r in
 				 fusion (fusion s s') (fusion_seq r');;
-	
+
 fusion_seq [7;5;9;6;4;1;2;8;3];;
+
+let rang a b =
+	let n = vect_length a in
+	let rec dicho g d =
+		if g = d then (if g = n-1 && b > a.(g) then g+1 else g)
+		else
+			let m = (g+d)/2 in
+			if b <= a.(m) then dicho g m else dicho (m+1) d
+	in dicho 0 (n-1);;
+
+rang [|2;4;6;8;10;25;31|] 25;;
+rang [|2;4;6;8;10;25;31|] 31;;
+rang [|2;4;6;8;10;25;31|] 26;;
+rang [|2;4;6;8;10;25;31|] 32;;
+
+let fusion_g_p g p =
+	let m = vect_length g and n = vect_length p in
+	let a = make_vect (n+m) 0 and i = ref 0 and j = ref 0 in
+	while !i + !j < m + n do
+		if !j < n then
+			(let hp = p.(!j) in
+			let v = rang g hp in blit_vect g (!i) a (!i + !j) (v - !i);
+			i := v;a.(!i + !j) <- hp; incr j;print_int(!j);)
+		else (blit_vect g (!i) a (!i + !j) (m - !i); i := m)
+	done;
+	a;;
+	
+fusion_g_p [|6;7;8;10;15;19;25;75;96;120|] [|3;17;25;130|];;
+fusion_g_p [|1;2;3;4;5;6;7;8;10|] [|3;7|];;
