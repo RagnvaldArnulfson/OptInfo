@@ -50,6 +50,19 @@ paire_dicho_lin [|1;5;7;9;15;19;25|] 2;;
 paire_dicho_lin [|1;5;7;9;15;19;25|] 22;;
 paire_dicho_lin [|1;5;7;9;15;19;25|] 21;;
 
+let recherche_bin_eg a ob =
+	let n = vect_length a in
+	let rec dicho g d =
+		if ob = a.(g) then g 
+		else if g = d then (-1)
+		else
+			let m = (g+d)/2 in
+			if ob <= a.(m) then dicho g m else dicho (m+1) d
+	in dicho 0 (n-1);;
+	
+recherche_bin_eg [|1;5;7;9;15;19;25|] 15;;
+recherche_bin_eg [|1;5;7;9;15;19;25|] 17;;
+
 let rec fusion_sans_rep = fun
 	| [] l -> l
 	| l [] -> l
