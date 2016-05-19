@@ -36,7 +36,7 @@ let add_int a b =
 	end
 	done;
 	if !r = 1 then concat_vect !resu [|1|] else !resu;;
-
+	
 (*let decalage i b =
 	let resu = ref (copy_vect b) in
 	for k = 1 to i do resu := concat_vect [|0|] !resu done;
